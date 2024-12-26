@@ -1,6 +1,7 @@
-
+from recuperer_contacts import recuperer_contacts
 # affiche la liste de tous les contacts
-def afficher_contacts(liste_contacts):
+def afficher_contacts():
+    liste_contacts = recuperer_contacts()
     repetition = 90
     print("*"*repetition)
     #print(f"Liste de tous vos constacts\n(Identifiant - Nom - Prenom - Email - Téléphone)")

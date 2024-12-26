@@ -11,9 +11,6 @@ def modifier_contact(numero_contact_a_modifier, numero_info_a_modifier, nouvelle
     # récupération du contact (objet) dont on modifiera une information
     contact_a_modifier = recuperer_contact(numero_contact_a_modifier, liste_contacts)
 
-    # suppression fichier contact préexistant : pour ne pas créer un nouveau fichier de contact dans le cas d'une modification
-    # du nom ou du numero de téléphone
-    supprimer_contact(numero_contact_a_modifier, liste_contacts)
 
     # on modifie l'attribut correspondant au numéro fourni par l'utilisateur
     if numero_info_a_modifier == 1:
@@ -27,6 +24,10 @@ def modifier_contact(numero_contact_a_modifier, numero_info_a_modifier, nouvelle
 
     elif numero_info_a_modifier == 4:
         contact_a_modifier.numero = nouvelle_valeur
+
+   # suppression fichier contact préexistant : pour ne pas créer un nouveau fichier de contact dans le cas d'une modification
+    # du nom ou du numero de téléphone
+    supprimer_contact(numero_contact_a_modifier, liste_contacts)
 
     nom = contact_a_modifier.nom
     prenom = contact_a_modifier.prenom

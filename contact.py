@@ -16,6 +16,7 @@ class Contact:
     #setter pour nom 
     @nom.setter
     def nom(self, nom):
+        # le nom ne doit pas être vide.
         if not nom.strip():
             raise ValueError("Impossible de créer un contact avec un nom vide. Veuillez réesayez svp...")
         self.__nom = nom
@@ -29,8 +30,9 @@ class Contact:
     #setter pour prenom 
     @prenom.setter
     def prenom(self, prenom):
+        # le prénom ne doit pas être vide.
         if not prenom.strip():
-            raise ValueError("Impossible de créer un contact avec un prenom vide. Veuillez réesayez svp...")
+            raise ValueError("Impossible de créer un contact avec un prénom vide. Veuillez réesayez svp...")
         self.__prenom = prenom
 
 
@@ -42,6 +44,7 @@ class Contact:
     #setter pour email 
     @email.setter
     def email(self, email):
+        # l'email doit contenir le caractère "@" et ne doit pas être vide.
         if "@" not in email or not email.strip():
             #print(f"numero : {email.strip()}")
             raise ValueError("Impossible de créer un contact avec un email vide et/ou invalide. Veuillez réesayez svp...")
@@ -56,6 +59,7 @@ class Contact:
     #setter pour numero
     @numero.setter
     def numero(self, numero):
+        # le numéro de téléphone de téléphone ne doit être composé que de chiffres, ceux-ci doivent être au nombre de 10.
         if not (len(numero.strip()) == 10) or not numero.strip().isdigit():
             #print(f"longueur numero : {len(numero.strip())}")
             #print(f"numero : {numero.strip()}")

@@ -3,6 +3,8 @@ from afficher_contacts import afficher_contacts
 from recuperer_contacts import recuperer_contacts
 from modifier_contact import modifier_contact
 from supprimer_contact import supprimer_contact
+from creer_contact import creer_contact
+from saisir_option_correct import saisir_option_correct
 
 option_menu_min = 1
 option_menu_max = 5
@@ -41,23 +43,8 @@ while(True):
     if choix_option_int == 1:
         # boucle pour ajouter plusieurs contacts successivement
         while (True):
-            print(f"*******************************************************************************")
-            print(f"Ajout Contact")
-            # boucle pour tester que l'objet a été créé sans aucun problème
-            while (True):
-                print(f"Veuillez svp saisir les informations ci-dessous pour ajouter un nouveau contact")
-                nom = input("Nom : ")
-                prenom = input("Prenom : ")
-                email = input("Email : ")
-                numero = input("Téléphone : ")
-                try:
-                    contact = Contact(nom, prenom, email, numero)
-                except ValueError as messageErreur:
-                    print(f"{messageErreur}\n")
-                else:
-                    break
-
-            contact.ajouter_contact(nom+numero+".txt")
+            contact = creer_contact()
+            contact.ajouter_contact(contact.nom+contact.numero+".txt")
             print("Le contact a été ajouté avec succès")
             choix_ajout = input("Entrez n'importe quelle valeur si vous souhaitez poursuivre avec l'ajout et (M) Si vous souhaitez retourner au menu principal : ")
             if choix_ajout.strip().upper() == "M":
@@ -69,65 +56,46 @@ while(True):
     elif choix_option_int == 2:
             # boucle pour modifier plusieurs contacts successivement
             while (True):
-                print(f"*******************************************************************************")
-                print(f"Modification Contact")
-                liste_contacts = recuperer_contacts()
-                afficher_contacts(liste_contacts)
-
-                # boucle pour la saisie d'un chiffre correcte
                 while(True):
-                    choix_contact_str = input(f"Veuillez svp rentrer le numero du contact que vous souhaitez modifier ({1}-{len(liste_contacts)}): ")
+                    print(f"*******************************************************************************")
+                    print(f"Modification Contact")
+                    afficher_contacts()
+                    liste_contacts = recuperer_contacts()
 
-                    if choix_contact_str.strip().isdigit():
-                        choix_contact_int = int(choix_contact_str)
-                        if 1 <= choix_contact_int <= len(liste_contacts):
-                            break
-                        else:
-                            print(f"La valeur {choix_contact_int} n'est pas comprise entre 1 et {len(liste_contacts)}. Veuillez réesayer svp.")
+                    # boucle pour la saisie d'un chiffre correcte
+                    id_contact = saisir_option_correct(1, len(liste_contacts), "Veuillez svp rentrer le numero du contact que vous souhaitez modifier")
+                    # fin boucle
+                
+                    # boucle pour la saisie d'un chiffre correcte
+                    numero_info_contact = saisir_option_correct(1, 4, "Quelle info souhaitez vous modifier ?\n(1) Nom (2) Prenom (3) Email (4) Numero => ")
+                    # fin boucle
+                    a_modifier = ""
+                    if numero_info_contact == 1:
+                        a_modifier = "Nom"
 
+                    elif numero_info_contact == 2:
+                        a_modifier = "Prenom"
+
+                    elif numero_info_contact == 3:
+                        a_modifier = "Email"
+
+                    elif numero_info_contact == 4:
+                        a_modifier = "Téléphone"
+
+                    #print(f"numero contact à modifier : {choix_contact_int} | info à modifier : {numero_info_a_modifier_int}")
+                    #print(f"liste_contacts : {liste_contacts}")
+
+
+                    valeur = input(f" {a_modifier} : ")
+
+                    #print(f"nouvelle valeur: {valeur}")
+                    try:
+                        contact_modifie = modifier_contact(id_contact, numero_info_contact, valeur, liste_contacts)
+                    except ValueError as message:
+                        print(f"{message}")
                     else:
-                        print(f"La valeur {choix_contact_str} n'est pas un chiffre. Veuillez réesayer svp.")
+                        break
 
-                # fin boucle
-            
-                # boucle pour la saisie d'un chiffre correcte
-                while(True):
-                    print(f"Quelle info souhaitez vous modifier ?")
-                    numero_info_a_modifier_str = input("(1) Nom (2) Prenom (3) Email (4) Numero => ")
-
-                    if numero_info_a_modifier_str.strip().isdigit():
-                        numero_info_a_modifier_int = int(numero_info_a_modifier_str)
-                        if 1 <= numero_info_a_modifier_int <= 4:
-                            break
-                        else:
-                            print(f"La valeur {numero_info_a_modifier_int} n'est pas comprise entre 1 et 4. Veuillez réesayer svp.")
-
-                    else:
-                        print(f"La valeur {numero_info_a_modifier_int} n'est pas un chiffre. Veuillez réesayer svp.")
-
-                # fin boucle
-                a_modifier = ""
-                if numero_info_a_modifier_int == 1:
-                    a_modifier = "Nom"
-
-                elif numero_info_a_modifier_int == 2:
-                    a_modifier = "Prenom"
-
-                elif numero_info_a_modifier_int == 3:
-                    a_modifier = "Email"
-
-                elif numero_info_a_modifier_int == 4:
-                    a_modifier = "Téléphone"
-
-                #print(f"numero contact à modifier : {choix_contact_int} | info à modifier : {numero_info_a_modifier_int}")
-                #print(f"liste_contacts : {liste_contacts}")
-
-
-                valeur = input(f" {a_modifier} : ")
-
-                #print(f"nouvelle valeur: {valeur}")
-
-                contact_modifie = modifier_contact(choix_contact_int, numero_info_a_modifier_int, valeur, liste_contacts)
                 print(f"Contact modifié avec succès")
                 print(f"Voici ces informations mis à jour")
                 print(f"Nom : {contact_modifie.nom}")
@@ -149,20 +117,9 @@ while(True):
             print(f"Suppression d'un contact")
             print()
             liste_contacts = recuperer_contacts()
-            afficher_contacts(liste_contacts)
+            afficher_contacts()
             # boucle choix d'identifiant correct
-            while(True):
-                identifiant_contact_str = input("Veuillez rentrer l'identifiant du contact que vous souhaitez supprimer : ")
-
-                if identifiant_contact_str.strip().isdigit():
-                    identifiant_contact_int = int(identifiant_contact_str)
-                    if 1 <= identifiant_contact_int <= len(liste_contacts):
-                        break
-                    else:
-                        print(f"La valeur {identifiant_contact_int} n'est pas comprise entre 1 et {len(liste_contacts)}. Veuillez réesayer svp.")
-
-                else:
-                    print(f"La valeur {identifiant_contact_str} n'est pas un chiffre. Veuillez réesayer svp.")
+            id_contact = saisir_option_correct(1, len(liste_contacts), "Veuillez rentrer l'identifiant du contact que vous souhaitez supprimer : ")
 
             decision_finale = input("Êtes vous sûr de vouloir supprimer ce contact\nEntrez n'importe quelle valeur pour poursuivre la suppression"
                                     "ou entrer (A) pour annuler et retourner au menu principal : ")
@@ -170,9 +127,9 @@ while(True):
             if decision_finale.strip().upper() == "A":
                 break
 
-            supprimer_contact(identifiant_contact_int, liste_contacts)
+            supprimer_contact(id_contact, liste_contacts)
             print(f"Que souhaitez-vous faire ?")
-            choix = input(f"(n'importe qu'elle valeur) Poursuivre \t(M) Retourner au menu principal : ")
+            choix = input(f"(N'importe quelle valeur) Poursuivre \t(M) Retourner au menu principal : ")
 
             if choix.strip().upper() == "M":
                 break
@@ -182,8 +139,7 @@ while(True):
 
     #option afficher tous les contacts
     elif choix_option_int == 4:
-        liste_contacts = recuperer_contacts()
-        afficher_contacts(liste_contacts)
+        afficher_contacts()
         menu_principal = input("Appuyez sur n'importe quelle touche pour revenir au menu principal: ")
         
 
